@@ -1,0 +1,522 @@
+//Banco de dados de personagens de desenhos animados
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <stdio.h>
+#include <iomanip>
+#include <cctype>
+#include <cstring>
+
+using namespace std;
+
+struct character{
+    int identificador;
+    char name[30];
+    char creator[80];
+    char tituloDesenho[30];
+    float height;
+    char bio[500];
+};
+
+string minusculo(string palavra) {
+    for (char& c : palavra) {
+        c = tolower(c);
+    }
+
+    return palavra;
+}
+
+/*int particionaNome(character personagens[], int c, int f) { // c = começo, f = fim
+    char pivo[30] ;
+    strcpy(pivo, personagens[c].name);    
+    int i = c+1, j = f;
+    while (i <= j) {
+        if (personagens[i].name <= pivo) i++;
+        else if (strcmp( pivo, personagens[j].name) <= pivo) j--; 
+        else { // (v[i] > pivo) e (v[j] < pivo)
+            swap (personagens[i],personagens[j]);
+            i++;
+            j--;
+        }
+    } // agora i == j+1                 
+    personagens[c] = personagens[j];
+    personagens[j].name = pivo;
+    return j; // retorna posição do pivô
+}
+
+
+void quickSortNome(character personagens[], int pos_pivo, int fim) {
+    int pos_novo_pivo;         
+    if (pos_pivo < fim) {  
+        pos_novo_pivo = particionaNome(personagens, pos_pivo, fim);
+        quickSortNome(personagens, pos_pivo, pos_novo_pivo - 1); 
+        quickSortNome(personagens, pos_novo_pivo + 1, fim);
+    }
+}
+
+int particionaAltura(character personagens[], int c, int f) { // c = começo, f = fim
+    float pivo = personagens[c].height;
+    int i = c+1, j = f;
+    while (i <= j) {
+        if (personagens[i].height <= pivo) i++;
+        else if (pivo <= personagens[j].height) j--; 
+        else { // (v[i] > pivo) e (v[j] < pivo)
+            swap (personagens[i],personagens[j]);
+            i++;
+            j--;
+        }
+    } // agora i == j+1                 
+    personagens[c] = personagens[j];
+    personagens[j].height = pivo;
+    return j; // retorna posição do pivô
+}
+
+
+void quickSortAltura(character personagens[], int pos_pivo, int fim) {
+    int pos_novo_pivo;         
+    if (pos_pivo < fim) {  
+        pos_novo_pivo = particionaAltura(personagens, pos_pivo, fim);
+        quickSortAltura(personagens, pos_pivo, pos_novo_pivo - 1); 
+        quickSortAltura(personagens, pos_novo_pivo + 1, fim);
+    }
+}*/
+
+
+void imprimirLista(character personagens[], int tamanho) {
+    cout << "\n\n\n" << endl;
+    
+    for (int i = 0; i < tamanho; i++){
+        cout << "PERSONAGEM " << personagens[i].identificador << ": \n" << "Nome: " <<  personagens[i].name << "\n"  <<
+        "Titulo do Desenho: " <<  personagens[i].tituloDesenho << "\n" << "Altura: "<< personagens[i].height << " metros " << 
+        "\n" << "Criador: " << personagens[i].creator << "\n" << "Descricao: " << personagens[i].bio << "\n" << endl;
+        cout << endl;
+        cout << "======================================================================================================================="<< "\n" << endl;
+    }
+    
+}
+
+
+/*void searchName(character personagens[], int tamanho){
+    string nomeBusca;
+    string nomeLista, nomeBuscado;
+    int encontrados[tamanho];
+    int select;
+    int j = 0;
+    
+    cin >> select;
+
+    quickSortNome(personagens, tamanho, 1);
+    fflush(stdin);
+    cout << "\n\n\nDigite o nome do personagem que deseja encontrar: ";
+    getline(cin, nomeBusca);
+    
+    nomeBuscado = minusculo(nomeBusca);
+    
+    for (int i = 0; i < tamanho; i++) {
+        nomeLista = minusculo(personagens[i].name);
+        if (nomeLista == nomeBuscado) {
+            encontrados[j] = i;
+            j++;
+        }           
+    }
+
+    if (j == 0) {
+        cout << "Nenhum personagem foi encontrado com o nome " << nomeBusca << endl;
+    }
+    else {
+        cout << "\nLista de personagens encontrados com o nome " << nomeBusca << ":" << endl;
+
+        for (int i = 0; i < j; i++) {
+            cout << "\n" << endl; 
+            cout << "PERSONAGEM " <<personagens[encontrados[i]].identificador << ": \n" << "Nome: " <<  personagens[encontrados[i]].name << "\n" << "Altura: "<< personagens[encontrados[i]].height << " metros "   << 
+            "\n" << "Titulo do Desenho: " <<  personagens[encontrados[i]].tituloDesenho << "\n" << "Criador: " << personagens[encontrados[i]].creator << "\n" << "Descricao: " << personagens[encontrados[i]].bio << "\n" << endl;
+            cout << endl;
+            cout << "=======================================================================================================================";               
+        }
+        cout << endl;            
+    }     
+    
+    cout << "\n";               
+}*/
+
+
+void searchHeight(character personagens[], int tamanho){
+
+    float heightMin, heightMax;
+    int encontrados[tamanho], j = 0;
+    
+    cout << endl;
+    cout << "Altura minima: ";
+    cin >> heightMin;
+    cout << "Altura maxima: ";
+    cin >> heightMax;
+
+    for (int i = 0; i < tamanho; i++) {
+            if (personagens[i].height >= heightMin and personagens[i].height <= heightMax) {
+                encontrados[j] = i;
+                j++;
+            }            
+        }
+
+        if (j == 0) {
+            cout << "Nenhum personagem foi encontrado com a altura entre " << heightMin << " e " << heightMax << endl;
+        }
+        else {
+            cout << "\nLista de personagens encontrados com a altura entre " << heightMin << " metros e " << heightMax << " metros : " << endl;
+
+            for (int i = 0; i < j; i++) {
+                cout << "\n" << endl; 
+                cout << "PERSONAGEM " <<personagens[encontrados[i]].identificador << ": \n" << "Nome: " <<  personagens[encontrados[i]].name 
+                    << "\n" << "Altura: "<< personagens[encontrados[i]].height << " metros " <<"\n" << "Titulo do Desenho: " 
+                    <<  personagens[encontrados[i]].tituloDesenho << "\n" << "Criador: " << personagens[encontrados[i]].creator << "\n" 
+                    << "Descricao: " << personagens[encontrados[i]].bio << "\n" << endl;
+                cout << endl;
+                cout << "=======================================================================================================================";                
+            }            
+        }
+    
+    cout << "\n";
+    cout << endl;
+}
+
+/*void addChar(character personagens[], int& tamanho, string cabecalho){
+    string nomeAdd, tituloAdd, criadorAdd, bioAdd;
+    float alturaAdd;
+    
+    tamanho++;
+
+    personagens[tamanho-1].identificador = tamanho;
+    
+    fflush(stdin);
+    cout << "\n\nInforme o nome do personagem que deseja adicionar: ";
+    getline(cin, nomeAdd);
+    personagens[tamanho-1].name = nomeAdd;
+
+    fflush(stdin);
+    cout << "Informe o titulo do desenho do personagem: ";
+    getline(cin, tituloAdd);
+    personagens[tamanho-1].tituloDesenho = tituloAdd;
+
+    fflush(stdin);
+    cout << "Informe o criador do personagem: ";
+    getline(cin, criadorAdd);
+    personagens[tamanho-1].creator = criadorAdd;
+
+    fflush(stdin);
+    cout << "Informe a altura do personagem: ";
+    cin >> alturaAdd;
+    personagens[tamanho-1].height = alturaAdd;
+
+    fflush(stdin);
+    cout << "Informe a descricao do personagem: ";
+    getline(cin, bioAdd);
+    personagens[tamanho-1].bio = bioAdd;
+
+    cout << endl;
+    cout<< "Personagem adicionado com sucesso!\n\n" << endl;
+    
+    ofstream arquivoAdd ("personagens.csv");
+    
+    arquivoAdd << cabecalho << endl;
+    for (int i = 0; i < tamanho; i++){
+        arquivoAdd << personagens[i].identificador << ';' <<  personagens[i].name << ";" <<  personagens[i].tituloDesenho <<
+        ';'<<  personagens[i].creator << ';' << personagens[i].height << ';' << personagens[i].bio << "\n";
+    }               
+}*/
+
+/*void editChar(character personagens[], int tamanho, string cabecalho){
+    int identificadorBuscado;
+    int select=0;
+    cout << "\n\nDigite o identificador do personagem a ser editado :" <<  endl;
+    cin >> identificadorBuscado;
+
+    cout << "PERSONAGEM " << personagens[identificadorBuscado-1].identificador << ": \n" << "Nome: " <<  personagens[identificadorBuscado-1].name << "\n" 
+        << "Altura: "<< personagens[identificadorBuscado-1].height << " metros " << "\n" << "Titulo do Desenho: " 
+        <<  personagens[identificadorBuscado-1].tituloDesenho << "\n" << "Criador: " << personagens[identificadorBuscado-1].creator 
+        << "\n" << "Descricao: " << personagens[identificadorBuscado-1].bio << "\n" << endl;
+    cout << endl;
+    cout << "======================================================================================================================="<< "\n" << endl;
+    
+
+    cout << "Voce deseja alterar os dados desse identificador ? \n"<<
+    "[1]- Sim " << endl << "[2]- Nao" << endl;
+
+    cout << "\n\n";
+
+    int numeroDigitado;
+    cin >> numeroDigitado;
+
+    cout << endl;
+
+    if (numeroDigitado==1){
+
+        do{
+            string novoNome;
+            float novaAltura;
+            string novoTitulo;
+            string novoCriador;
+            string novaDescricao;
+
+            switch (select)
+            {
+            case 0:
+                cout<< "[1] - Editar nome do personagem \n"<<
+                "[2] - Editar Altura \n"<<
+                "[3] - Editar o Titulo \n"<< 
+                "[4] - Editar o nome do criador \n"<<
+                "[5] - Editar Descricao \n\n"<<
+                "[-1] - Para sair da edicao\n" << endl;
+                break;
+
+            case 1:
+                fflush (stdin);
+                cout<< "Digite o novo nome do personagem : ";
+                getline(cin, novoNome);
+                personagens[identificadorBuscado-1].name= novoNome;
+                cout << "\nNome do personagem alterado com sucesso!\n" << endl;
+                
+                break;
+
+            case 2:
+                fflush (stdin);
+                cout<< "Digite a nova altura do personagem : ";
+                cin>> novaAltura;
+                personagens[identificadorBuscado-1].height= novaAltura;
+                cout << "\nAltura do personagem alterada com sucesso!\n" << endl;
+                
+                break;
+
+            case 3:
+                fflush (stdin);
+                cout<< "Digite o novo titulo do desenho : ";
+                getline(cin,novoTitulo);
+                personagens[identificadorBuscado-1].tituloDesenho= novoTitulo;
+                cout << "\nTítulo do desenho do personagem alterado com sucesso!\n" << endl;
+                
+                break;
+            
+            case 4:
+                fflush (stdin);
+                cout<< "Digite o novo criador do personagem : ";
+                getline(cin,novoCriador);
+                personagens[identificadorBuscado-1].creator= novoCriador;
+                cout << "\nCriador do personagem alterado com sucesso!\n" << endl;
+                
+                break;
+
+            case 5:
+                fflush (stdin);
+                cout<< "Digite a nova descriacao personagem : ";
+                getline(cin,novaDescricao);
+                personagens[identificadorBuscado-1].bio = novaDescricao;
+                cout << "\nDescrição do personagem alterada com sucesso!\n" << endl;
+                
+                break;
+            
+            default:
+                break;
+            }
+            if (select != -1 and select != 0) {
+                cout << "[0] - Para voltar ao menu de edicao" << endl;
+                cout << "[-1] - Para encerrar a edicao" << endl;
+                cin >> select;
+            }
+            else {
+                cin >> select;
+            }
+        }while(select!= -1);
+
+        ofstream arquivoAdd ("personagens.csv");    
+        arquivoAdd << cabecalho << endl;
+        for (int i = 0; i < tamanho; i++){
+            arquivoAdd << personagens[i].identificador << ';' <<  personagens[i].name << ";" <<  personagens[i].tituloDesenho <<
+            ';'<<  personagens[i].creator << ';' << personagens[i].height << ';' << personagens[i].bio << "\n";
+        }            
+    }
+    cout << "\n" << endl;
+}*/
+
+/*void delChar(character personagens[], int& tamanho, string cabecalho){
+
+    int identificadorBuscado,  numeroDigitado;
+
+    fflush(stdin);
+    cout << "Digite o identificador do peronagem que deseja retirar: ";
+    cin >> identificadorBuscado;
+
+    cout << "PERSONAGEM " << personagens[identificadorBuscado-1].identificador << ": \n" << "Nome: " <<  personagens[identificadorBuscado-1].name << "\n" 
+        << "Altura: "<< personagens[identificadorBuscado-1].height << " metros " << "\n" << "Titulo do Desenho: " 
+        <<  personagens[identificadorBuscado-1].tituloDesenho << "\n" << "Criador: " << personagens[identificadorBuscado-1].creator 
+        << "\n" << "Descricao: " << personagens[identificadorBuscado-1].bio << "\n" << endl;
+
+    cout << "Voce deseja remover os dados desse identificador ? \n"<<
+    "[1]- Sim " << endl << "[2]- Nao" << endl;
+
+    cin >> numeroDigitado;
+
+    if (numeroDigitado == 1){
+        for (int i = identificadorBuscado; i < tamanho; i++){
+            personagens[i-1].name = personagens[i].name;
+            personagens[i-1].tituloDesenho  = personagens[i].tituloDesenho;
+            personagens[i-1].height = personagens[i].height;
+            personagens[i-1].creator = personagens[i].creator;
+            personagens[i-1].bio = personagens[i].bio;
+        }
+    }
+
+    ofstream arquivoAdd ("personagens.csv");    
+    arquivoAdd << cabecalho << endl;
+    tamanho--;
+    for (int i = 0; i < tamanho; i++){
+        arquivoAdd << personagens[i].identificador << ';' <<  personagens[i].name << ";" <<  personagens[i].tituloDesenho <<
+        ';'<<  personagens[i].creator << ';' << personagens[i].height << ';' << personagens[i].bio << "\n";
+    }            
+    
+    
+    
+
+    cout << "Personagem removido com sucesso!\n";
+
+}*/
+
+int main(){
+    int capacidade = 50;
+    character* personagens = new character[capacidade];
+
+    string cabecalho;
+    char lixo;
+    int tamanho = 0;
+
+
+    cout << "Informe a opcao de arquivo que deseja ler: " << endl;
+    cout << "\n\n\nTipos de arquivo: \n\n"
+                << "[1] -  Arquivo .CSV\n"
+                << "[2] -  Arquivo Binario \n"; 
+    
+    int arquivo;
+    cin >> arquivo;
+    string nomeArq;
+
+    cout << "Informe o nome do arquivo: " << endl;
+    cin >> nomeArq;
+
+    ifstream arqPersonagens;
+
+    if (arquivo == 1) {
+        ifstream arqPersonagens(nomeArq);
+    }
+    else {
+        ifstream arqPersonagens(nomeArq, ios::binary);
+    }
+    
+    
+    if (not arqPersonagens){
+        cout<< "Arquivo nao encontrado!"<< endl;
+    }
+    else {
+        
+        if (arquivo == 1) {
+            
+        ofstream arqBin ("dadosBin.dat");
+        
+        getline(arqPersonagens, cabecalho);
+
+        while (arqPersonagens >> personagens[tamanho].identificador) {
+            if (tamanho >= capacidade - 1) {
+                character* temp = new character[capacidade+30];
+                for (int i = 0; i < capacidade; i++) {
+                    temp[i] = personagens[i];
+                }
+                delete[] personagens;
+                personagens = temp;
+                capacidade+=30;
+            }
+
+            arqPersonagens >> lixo;
+            arqPersonagens.getline(personagens[tamanho].name, 30, ';');
+            arqPersonagens.getline(personagens[tamanho].tituloDesenho, 30, ';');
+            arqPersonagens.getline(personagens[tamanho].creator, 80, ';');
+            arqPersonagens >> personagens[tamanho].height;
+            arqPersonagens >> lixo;
+            arqPersonagens.getline(personagens[tamanho].bio, 500);
+            tamanho++;
+            fflush(stdin);
+        }
+
+        //criando arquivo binário
+        arqBin.write (reinterpret_cast <const char *>(tamanho), sizeof(int));
+        arqBin.write (reinterpret_cast <const char *>(personagens), tamanho * sizeof(character));
+            
+        }
+
+        else {
+            //Le arquivo binario
+            int i = 0;
+            arqPersonagens.read(reinterpret_cast <char *>(tamanho), sizeof(int));
+            arqPersonagens.read(reinterpret_cast <char *>(personagens), (tamanho-1) * sizeof(character));
+            
+            
+
+        }
+
+        int select = 0;
+        
+        do {
+            switch(select){
+                case 0:
+                    cout << "\n\n\nMetodos de Pesquisa: \n\n" 
+                        << "[1] - Mostrar lista completa \n"
+                        << "[2] - Pesquisar por nome \n" 
+                        << "[3] - Pesquisar por altura \n" 
+                        << "[4] - Adicionar personagem \n"
+                        << "[5] - Editar personagem \n"
+                        << "[6] - Retirar personagem \n\n" 
+                        << "[-1] - Para encerrar o programa\n" << endl;
+                    break;
+                case 1:
+                    imprimirLista(personagens, tamanho);
+                    break;
+
+                case 2:
+                    //searchName(personagens, tamanho);
+                    break;
+
+                case 3:
+                    searchHeight(personagens, tamanho);
+                    break;
+
+                case 4:
+                    //addChar(personagens, tamanho, cabecalho);
+                    break;
+
+                case 5:
+                    //editChar(personagens, tamanho, cabecalho);
+                    break;
+
+                case 6:
+                    //delChar(personagens, tamanho, cabecalho);
+                    break;
+
+                default:
+                    cout << "Programa encerrado";
+                    break;
+            }
+
+            if (select != -1 and select != 0) {
+                cout << "[0] - Para voltar ao menu principal" << endl;
+                cout << "[-1] - Para encerrar o programa" << endl;
+                cin >> select;
+            }
+            else {
+                cin >> select;
+            }
+
+        } while (select != -1);
+
+    }
+    
+    
+    cout << "\n\nPrograma Encerrado!" << endl;
+
+    return 0;
+} 
