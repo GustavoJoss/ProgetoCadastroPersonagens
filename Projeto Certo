@@ -7,7 +7,6 @@
 #include <cctype>
 #include <cstring>
 #include <string.h>
-#include <locale.h>
 
 using namespace std;
 
@@ -111,6 +110,7 @@ void quickSortAltura(character personagens[], int pos_pivo, int fim) {
 void imprimirLista(character personagens[], int tamanho, int capacidade) {
     character copiaPersonagens[capacidade];
     copy(personagens, personagens + tamanho, copiaPersonagens);
+    
     cout << "\n\n\n" << endl;
     int select = 0;
     cout<< "[1] - Imprimir lista em ordem alfabetica \n"<<
@@ -330,13 +330,13 @@ void addChar(character personagens[], int& tamanho, string cabecalho, int& capac
             ';'<<  personagens[i].creator << ';' << personagens[i].height << ';' << personagens[i].bio << "\n";
         }
 
-        ofstream arqBin (nomeArq + ".dat", ios::binary);
+        ofstream arqBin (nomeArq + ".bin", ios::binary);
 
         arqBin.write (reinterpret_cast <const char *>(&tamanho), sizeof(int));
         arqBin.write (reinterpret_cast <const char *>(personagens), tamanho * sizeof(character));
     }
     else {
-        ofstream arqBin (nomeArq + ".dat", ios::binary);
+        ofstream arqBin (nomeArq + ".bin", ios::binary);
 
         arqBin.write (reinterpret_cast <const char *>(&tamanho), sizeof(int));
         arqBin.write (reinterpret_cast <const char *>(personagens), tamanho * sizeof(character));
@@ -474,13 +474,13 @@ void editChar(character personagens[], int tamanho, string cabecalho){
             ';'<<  personagens[i].creator << ';' << personagens[i].height << ';' << personagens[i].bio << "\n";
         }
 
-        ofstream arqBin (nomeArq + ".dat", ios::binary);
+        ofstream arqBin (nomeArq + ".bin", ios::binary);
 
         arqBin.write (reinterpret_cast <const char *>(&tamanho), sizeof(int));
         arqBin.write (reinterpret_cast <const char *>(personagens), tamanho * sizeof(character));
     }
     else {
-        ofstream arqBin (nomeArq + ".dat", ios::binary);
+        ofstream arqBin (nomeArq + ".bin", ios::binary);
 
         arqBin.write (reinterpret_cast <const char *>(&tamanho), sizeof(int));
         arqBin.write (reinterpret_cast <const char *>(personagens), tamanho * sizeof(character));
@@ -542,13 +542,13 @@ void delChar(character personagens[], int& tamanho, string cabecalho){
                 ';'<<  personagens[i].creator << ';' << personagens[i].height << ';' << personagens[i].bio << "\n";
             }
 
-            ofstream arqBin (nomeArq + ".dat", ios::binary);
+            ofstream arqBin (nomeArq + ".bin", ios::binary);
 
             arqBin.write (reinterpret_cast <const char *>(&tamanho), sizeof(int));
             arqBin.write (reinterpret_cast <const char *>(personagens), tamanho * sizeof(character));
         }
         else {
-            ofstream arqBin (nomeArq + ".dat", ios::binary);
+            ofstream arqBin (nomeArq + ".bin", ios::binary);
 
             arqBin.write (reinterpret_cast <const char *>(&tamanho), sizeof(int));
             arqBin.write (reinterpret_cast <const char *>(personagens), tamanho * sizeof(character));
@@ -561,7 +561,7 @@ void delChar(character personagens[], int& tamanho, string cabecalho){
 int main(){
     setlocale(LC_ALL, "pt_BR.UTF-8");
     
-    int capacidade = 50;
+    int capacidade = 100;
     character* personagens = new character[capacidade];
 
     string cabecalho;
@@ -586,7 +586,7 @@ int main(){
         arqPersonagens.open(nomeArq + ".csv");
     }
     else {
-        arqPersonagens.open(nomeArq + ".dat", ios::binary);
+        arqPersonagens.open(nomeArq + ".bin", ios::binary);
     }
 
     if (not arqPersonagens){
@@ -595,7 +595,7 @@ int main(){
     else {
     
         if (arquivo == 1) {
-            ofstream arqBin (nomeArq + ".dat");
+            ofstream arqBin (nomeArq + ".bin", ios::binary);
         
             getline(arqPersonagens, cabecalho);
 
@@ -622,21 +622,25 @@ int main(){
             }
 
             //escreve arquivo binário
-            arqBin.write (reinterpret_cast <const char *>(&tamanho), sizeof(int));
-            arqBin.write (reinterpret_cast <const char *>(personagens), tamanho * sizeof(character));
+            for (int i = 0; i < tamanho; i++) {
+                arqBin.write((char*) &personagens[i], sizeof(character));
+            }
+            
+            
         }
         else {
             //Le arquivo binario
-            arqPersonagens.read(reinterpret_cast <char *>(&tamanho), sizeof(int));
-            arqPersonagens.read(reinterpret_cast <char *>(personagens), tamanho * sizeof(character));
+            arqPersonagens.seekg(0, ios::end);
+            int tamanhoArquivo = arqPersonagens.tellg();
 
-            // Ajusta as strings lidas para terem o terminador nulo
-            for (int i = 0; i < tamanho; i++) {
-                personagens[i].name[sizeof(personagens[i].name) - 1] = '\0';
-                personagens[i].tituloDesenho[sizeof(personagens[i].tituloDesenho) - 1] = '\0';
-                personagens[i].creator[sizeof(personagens[i].creator) - 1] = '\0';
-                personagens[i].bio[sizeof(personagens[i].bio) - 1] = '\0';
+            arqPersonagens.seekg(0, ios::beg);
+
+            int estoqueMax = tamanhoArquivo / sizeof(character);
+
+            while (tamanho < estoqueMax && arqPersonagens.read((char*)&personagens[tamanho], sizeof(character))) {
+            tamanho++;
             }
+
         }
 
         int select = 0;
