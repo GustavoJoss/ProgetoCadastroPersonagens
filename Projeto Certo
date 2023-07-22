@@ -107,24 +107,26 @@ void quickSortAltura(character personagens[], int pos_pivo, int fim) {
 
 //PROCEDIMENTO PARA IMPRIMIR TODOS OS PERSONAGENS DO NOSSO ARQUIVO CSV:
 
-void imprimirLista(character personagens[], int tamanho) {
+void imprimirLista(character personagens[], int tamanho, int capacidade) {
+    character copiaPersonagens[capacidade];
+    copy(personagens, personagens + tamanho, copiaPersonagens);
     cout << "\n\n\n" << endl;
     int select = 0;
     cout<< "[1] - Imprimir lista em ordem alfabetica \n"<<
-            "[2] - Imprimir lista em ordem de altura \n" << endl;
+            "[2] - Imprimir lista em ordem de altura \n" << 
+            "[3] - Imprimir lista original" << endl;
 
     cin >> select;
 
     switch (select) {
         case 1:
             fflush (stdin);
-
-            quickSortNome(personagens, 0, tamanho-1);
+            quickSortNome(copiaPersonagens, 0, tamanho-1);
 
             for (int i = 0; i < tamanho; i++){
-                cout << "PERSONAGEM " << personagens[i].identificador << ": \n" << "Nome: " <<  personagens[i].name << "\n"  <<
-                "Titulo do Desenho: " <<  personagens[i].tituloDesenho << "\n" << "Altura: "<< personagens[i].height << " metros " << 
-                "\n" << "Criador: " << personagens[i].creator << "\n" << "Descricao: " << personagens[i].bio << "\n" << endl;
+                cout << "PERSONAGEM " << copiaPersonagens[i].identificador << ": \n" << "Nome: " <<  copiaPersonagens[i].name << "\n"  <<
+                "Titulo do Desenho: " <<  copiaPersonagens[i].tituloDesenho << "\n" << "Altura: "<< copiaPersonagens[i].height << " metros " << 
+                "\n" << "Criador: " << copiaPersonagens[i].creator << "\n" << "Descricao: " << copiaPersonagens[i].bio << "\n" << endl;
                 cout << endl;
                 cout << "======================================================================================================================="<< "\n" << endl;
             }
@@ -134,7 +136,20 @@ void imprimirLista(character personagens[], int tamanho) {
         case 2:
             fflush (stdin);
 
-            quickSortAltura(personagens, 0, tamanho-1);
+            quickSortAltura(copiaPersonagens, 0, tamanho-1);
+            
+            for (int i = 0; i < tamanho; i++){
+                cout << "PERSONAGEM " << copiaPersonagens[i].identificador << ": \n" << "Nome: " <<  copiaPersonagens[i].name << "\n"  <<
+                "Titulo do Desenho: " <<  copiaPersonagens[i].tituloDesenho << "\n" << "Altura: "<< copiaPersonagens[i].height << " metros " << 
+                "\n" << "Criador: " << copiaPersonagens[i].creator << "\n" << "Descricao: " << copiaPersonagens[i].bio << "\n" << endl;
+                cout << endl;
+                cout << "======================================================================================================================="<< "\n" << endl;
+            }
+            
+            break;
+        
+        case 3:
+            fflush (stdin);
             
             for (int i = 0; i < tamanho; i++){
                 cout << "PERSONAGEM " << personagens[i].identificador << ": \n" << "Nome: " <<  personagens[i].name << "\n"  <<
@@ -156,13 +171,15 @@ void imprimirLista(character personagens[], int tamanho) {
 
 //PROCEDIMENTO PARA PESQUISAR ATRAVÉS DOS CAMPOS STRING, NOME, TITULO E CRADOR DE CADA PERSONAGEM.
 
-void searchName(character personagens[], int tamanho){
+void searchName(character personagens[], int tamanho, int capacidade){
+    character copiaPersonagens[capacidade];
+    copy(personagens, personagens + tamanho, copiaPersonagens);
     char nomeBusca[50];
     int encontrados[tamanho];
     int j = 0;
     char *ponteiro;
 
-    quickSortNome(personagens, 0, tamanho-1);
+    quickSortNome(copiaPersonagens, 0, tamanho-1);
     
     fflush(stdin);
     cout << "\n\n\nDigite o nome do personagem que deseja encontrar: ";
@@ -171,7 +188,7 @@ void searchName(character personagens[], int tamanho){
     
     // ESSA ESTRURA FOI UTILIZADA PARA PESQUISAR UMA STRING DENTRO DE UMA STRING, POR ISSO A UTILIZAÇAO DE strstr:
     for (int i = 0; i < tamanho; i++) {
-        ponteiro = strstr(minusculo(personagens[i].name), minusculo(nomeBusca));
+        ponteiro = strstr(minusculo(copiaPersonagens[i].name), minusculo(nomeBusca));
         if (ponteiro) {
             encontrados[j] = i;
             j++;
@@ -186,8 +203,8 @@ void searchName(character personagens[], int tamanho){
 
         for (int i = 0; i < j; i++) {
             cout << "\n" << endl; 
-            cout << "PERSONAGEM " <<personagens[encontrados[i]].identificador << ": \n" << "Nome: " <<  personagens[encontrados[i]].name << "\n" << "Altura: "<< personagens[encontrados[i]].height << " metros "   << 
-            "\n" << "Titulo do Desenho: " <<  personagens[encontrados[i]].tituloDesenho << "\n" << "Criador: " << personagens[encontrados[i]].creator << "\n" << "Descricao: " << personagens[encontrados[i]].bio << "\n" << endl;
+            cout << "PERSONAGEM " <<copiaPersonagens[encontrados[i]].identificador << ": \n" << "Nome: " <<  copiaPersonagens[encontrados[i]].name << "\n" << "Altura: "<< copiaPersonagens[encontrados[i]].height << " metros "   << 
+            "\n" << "Titulo do Desenho: " <<  copiaPersonagens[encontrados[i]].tituloDesenho << "\n" << "Criador: " << copiaPersonagens[encontrados[i]].creator << "\n" << "Descricao: " << copiaPersonagens[encontrados[i]].bio << "\n" << endl;
             cout << endl;
             cout << "=======================================================================================================================";               
         }
@@ -200,12 +217,13 @@ void searchName(character personagens[], int tamanho){
 
 // PRCEDIMENTO PARA PESQUISAR UM PERSONAGEM QEU ESTA DENTRO DE UMA ALTURA MÍNIMA DIGITADA ATÉ UMA ALTURA MÁXIMA DIGITADA:
 
-void searchHeight(character personagens[], int tamanho){
-
+void searchHeight(character personagens[], int tamanho, int capacidade){
+    character copiaPersonagens[capacidade];
+    copy(personagens, personagens + tamanho, copiaPersonagens);
     float heightMin, heightMax;
     int encontrados[tamanho], j = 0;
 
-    quickSortAltura(personagens, 0, tamanho-1);
+    quickSortAltura(copiaPersonagens, 0, tamanho-1);
     
     cout << endl;
     cout << "Altura minima: ";
@@ -214,7 +232,7 @@ void searchHeight(character personagens[], int tamanho){
     cin >> heightMax;
 
     for (int i = 0; i < tamanho; i++) {
-            if (personagens[i].height >= heightMin and personagens[i].height <= heightMax) {
+            if (copiaPersonagens[i].height >= heightMin and copiaPersonagens[i].height <= heightMax) {
                 encontrados[j] = i;
                 j++;
             }            
@@ -228,10 +246,10 @@ void searchHeight(character personagens[], int tamanho){
 
             for (int i = 0; i < j; i++) {
                 cout << "\n" << endl; 
-                cout << "PERSONAGEM " <<personagens[encontrados[i]].identificador << ": \n" << "Nome: " <<  personagens[encontrados[i]].name 
-                    << "\n" << "Altura: "<< personagens[encontrados[i]].height << " metros " <<"\n" << "Titulo do Desenho: " 
-                    <<  personagens[encontrados[i]].tituloDesenho << "\n" << "Criador: " << personagens[encontrados[i]].creator << "\n" 
-                    << "Descricao: " << personagens[encontrados[i]].bio << "\n" << endl;
+                cout << "PERSONAGEM " <<copiaPersonagens[encontrados[i]].identificador << ": \n" << "Nome: " <<  copiaPersonagens[encontrados[i]].name 
+                    << "\n" << "Altura: "<< copiaPersonagens[encontrados[i]].height << " metros " <<"\n" << "Titulo do Desenho: " 
+                    <<  copiaPersonagens[encontrados[i]].tituloDesenho << "\n" << "Criador: " << copiaPersonagens[encontrados[i]].creator << "\n" 
+                    << "Descricao: " << copiaPersonagens[encontrados[i]].bio << "\n" << endl;
                 cout << endl;
                 cout << "=======================================================================================================================";                
             }            
@@ -624,15 +642,15 @@ int main(){
                         << "[-1] - Para encerrar o programa\n" << endl;
                     break;
                 case 1:
-                    imprimirLista(personagens, tamanho);
+                    imprimirLista(personagens, tamanho, capacidade);
                     break;
 
                 case 2:
-                    searchName(personagens, tamanho);
+                    searchName(personagens, tamanho, capacidade);
                     break;
 
                 case 3:
-                    searchHeight(personagens, tamanho);
+                    searchHeight(personagens, tamanho, capacidade);
                     break;
 
                 case 4:
