@@ -7,6 +7,7 @@
 #include <cctype>
 #include <cstring>
 #include <string.h>
+#include <locale.h>
 
 using namespace std;
 
@@ -185,7 +186,7 @@ void searchName(character personagens[], int tamanho, int capacidade){
     cout << "\n\n\nDigite o nome do personagem que deseja encontrar: ";
     cin.getline(nomeBusca, 50);
     
-    
+    //Busca sequencial
     // ESSA ESTRURA FOI UTILIZADA PARA PESQUISAR UMA STRING DENTRO DE UMA STRING, POR ISSO A UTILIZAÇAO DE strstr:
     for (int i = 0; i < tamanho; i++) {
         ponteiro = strstr(minusculo(copiaPersonagens[i].name), minusculo(nomeBusca));
@@ -231,6 +232,7 @@ void searchHeight(character personagens[], int tamanho, int capacidade){
     cout << "Altura maxima: ";
     cin >> heightMax;
 
+    //Busca sequencial
     for (int i = 0; i < tamanho; i++) {
             if (copiaPersonagens[i].height >= heightMin and copiaPersonagens[i].height <= heightMax) {
                 encontrados[j] = i;
@@ -262,11 +264,19 @@ void searchHeight(character personagens[], int tamanho, int capacidade){
 
 //PROCEDIMNETO PARA ADICIONAR UM NOVO PERSONAGEM:
 
-void addChar(character personagens[], int& tamanho, string cabecalho){
+void addChar(character personagens[], int& tamanho, string cabecalho, int& capacidade){
     char nomeAdd[30], tituloAdd[30], criadorAdd[80], bioAdd[500];
     float alturaAdd;
     
     tamanho++;
+    character* temp = new character[capacidade+1];
+    for (int i = 0; i < tamanho-1; i++) {
+        temp[i] = personagens[i];
+    }
+    delete[] personagens;
+    personagens = temp;
+    capacidade+=1;
+
 
     personagens[tamanho-1].identificador = tamanho;
     
@@ -276,7 +286,7 @@ void addChar(character personagens[], int& tamanho, string cabecalho){
     strcpy(personagens[tamanho-1].name, nomeAdd);
 
     fflush(stdin);
-    cout << "Informe o titulo do desenho do personagem: ";
+    cout << "Informe o título do desenho do personagem: ";
     cin.getline(tituloAdd, 30);
     strcpy(personagens[tamanho-1].tituloDesenho, tituloAdd);
 
@@ -306,7 +316,7 @@ void addChar(character personagens[], int& tamanho, string cabecalho){
     int arquivo;
     cin >> arquivo;
 
-    cout << "Qual o nome do arquivo?" << endl;
+    cout << "Qual o nome do arquivo? (sem a extensao, ex: .csv)" << endl;
     cout <<  "\nATENCAO: Caso o nome do arquivo ja existir, o mesmo sera substituido!" << endl;
     string nomeArq;
     cin >> nomeArq;
@@ -450,7 +460,7 @@ void editChar(character personagens[], int tamanho, string cabecalho){
     int arquivo;
     cin >> arquivo;
 
-    cout << "Qual o nome do arquivo?" << endl;
+    cout << "Qual o nome do arquivo? (sem a extensao, ex: .csv)" << endl;
     cout <<  "\nATENCAO: Caso o nome do arquivo ja existir, o mesmo sera substituido!" << endl;
     string nomeArq;
     cin >> nomeArq;
@@ -518,7 +528,7 @@ void delChar(character personagens[], int& tamanho, string cabecalho){
         int arquivo;
         cin >> arquivo;
 
-        cout << "Qual o nome do arquivo?" << endl;
+        cout << "Qual o nome do arquivo? (sem a extensao, ex: .csv)" << endl;
         cout <<  "\nATENCAO: Caso o nome do arquivo ja existir, o mesmo sera substituido!" << endl;
         string nomeArq;
         cin >> nomeArq;
@@ -549,6 +559,8 @@ void delChar(character personagens[], int& tamanho, string cabecalho){
 }
 
 int main(){
+    setlocale(LC_ALL, "pt_BR.UTF-8");
+    
     int capacidade = 50;
     character* personagens = new character[capacidade];
 
@@ -564,7 +576,7 @@ int main(){
     int arquivo;
     cin >> arquivo;
 
-    cout << "Informe o nome do arquivo: " << endl;
+    cout << "Informe o nome do arquivo (sem a extensao, ex: .csv):\n" << endl;
     string nomeArq;
     cin >> nomeArq;
 
@@ -589,13 +601,13 @@ int main(){
 
             while (arqPersonagens >> personagens[tamanho].identificador) {
                 if (tamanho >= capacidade - 1) {
-                    character* temp = new character[capacidade+30];
+                    character* temp = new character[capacidade+10];
                     for (int i = 0; i < capacidade; i++) {
                         temp[i] = personagens[i];
                     }
                     delete[] personagens;
                     personagens = temp;
-                    capacidade+=30;
+                    capacidade+=10;
                 }
 
                 arqPersonagens >> lixo;
@@ -654,7 +666,7 @@ int main(){
                     break;
 
                 case 4:
-                    addChar(personagens, tamanho, cabecalho);
+                    addChar(personagens, tamanho, cabecalho, capacidade);
                     break;
 
                 case 5:
