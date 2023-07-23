@@ -1,4 +1,10 @@
-//Banco de dados de personagens de desenhos animados
+//INTEGRANTES DO GRUPO:
+//Alexandre Marques Spinola Cardoso
+//Gustavo do Carmo Resende
+//Gustavo José Rodrigues Pereira
+
+//TEMA: Personagens de desenhos animados
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -27,7 +33,7 @@ struct character{
 
 char* minusculo(const char* palavra) {
     size_t comprimento = strlen(palavra); // Obter o comprimento da string de entrada
-    char* resultado = new char[comprimento + 1]; // Criar um novo vetor para o resultadoado (mais 1 para o caractere nulo '\0')
+    char* resultado = new char[comprimento + 1]; // Criar um novo vetor para o resultado (mais 1 para o caractere nulo '\0')
     
     for (size_t i = 0; i < comprimento; i++) {
         resultado[i] = tolower(palavra[i]); // Transformar a letra em minúscula e armazená-la no vetor de resultadoado
